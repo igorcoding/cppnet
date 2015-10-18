@@ -16,6 +16,7 @@ class RecurrentLayer : public ForwardLayer {
         virtual const arma::vec* activate() override {}
         virtual const arma::vec* activate(const arma::vec& context);
         virtual void backpropagate(const arma::vec* layer_error) override;
+        virtual void backpropagate_apply() override;
 
     private:
         arma::mat* _context_w;
@@ -30,12 +31,14 @@ public:
 
     virtual const arma::vec* activate() override;
     virtual void backpropagate(const arma::vec* layer_error) override;
+    virtual void backpropagate_apply() override;
 
 protected:
 
 
 private:
     std::vector<RecurrentPartLayer*> _parts;
+    arma::vec _context;
 };
 
 #endif //CPPNET_RECURRENTLAYER_H

@@ -13,13 +13,24 @@ public:
     ~ForwardLayer();
     virtual void init() override;
 
+    virtual arma::vec eval(const arma::vec& input) override;
     virtual const arma::vec* activate() override;
     virtual void backpropagate(const arma::vec* layer_error) override;
-
+    virtual void backpropagate_apply() override;
 
 protected:
     arma::mat* _w;
-    arma::vec  _prev_out;
+    arma::vec* _b;
+    arma::mat* _dw;
+    arma::vec* _db;
+    uint32_t   _m;
+
+    arma::mat* _w_last_change;
+    arma::vec* _b_last_change;
+
+
+private:
+    void clean_dw();
 };
 
 #endif //CPPNET_FORWARDLAYER_H

@@ -10,6 +10,7 @@ public:
     InputLayer(int size);
 
     virtual void set_prev_layer(Layer* prev_layer) override;
+    virtual arma::vec eval(const arma::vec& input) override;
 };
 
 #endif //CPPNET_INPUTLAYER_H

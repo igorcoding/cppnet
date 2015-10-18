@@ -8,3 +8,7 @@ InputLayer::InputLayer(int size)
 void InputLayer::set_prev_layer(Layer* prev_layer) {
     throw std::logic_error("Input layer can only be the first layer");
 }
+
+arma::vec InputLayer::eval(const arma::vec& input) {
+    return input;
+}

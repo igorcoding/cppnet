@@ -25,6 +25,7 @@ public:
     virtual void set_prev_layer(Layer* prev_layer) override;
     virtual const arma::vec* activate() override;
     virtual void backpropagate(const arma::vec* layer_error) override;
+    virtual void backpropagate_apply() override;
 
     virtual void start_over();
     const arma::Col<T>* get_current_output() const;
@@ -66,7 +67,8 @@ const arma::vec* StreamLayer<T>::activate() {
     if (_train_example_it == _data_it->inputs().end()) {
         // end of example
         ++_data_it;
-        return nullptr;
+        _train_example_it = _data_it->inputs().begin();
+        return nullptr; // signal that example ended
     } else {
         const auto& d = *(_train_example_it++);
         return &d;
@@ -79,8 +81,14 @@ void StreamLayer<T>::backpropagate(const arma::vec* layer_error) {
 }
 
 template <typename T> inline
+void StreamLayer<T>::backpropagate_apply() {
+
+}
+
+template <typename T> inline
 void StreamLayer<T>::start_over() {
     _data_it = _train_data.data().begin();
+    _train_example_it = _data_it->inputs().begin();
 }
 
 template <typename T> inline
@@ -103,9 +111,9 @@ void StreamLayer<T>::state_rewind() {
 template <typename T> inline
 void StreamLayer<T>::state_next() {
     ++_state_train_example_it;
-    if (_state_train_example_it == _data_it->inputs().end()) {
+    if (_state_train_example_it == _state_data_it->inputs().end()) {
         ++_state_data_it;
-        _state_train_example_it = _data_it->inputs().begin();
+        _state_train_example_it = _state_data_it->inputs().begin();
     }
     state_rewind();
 }

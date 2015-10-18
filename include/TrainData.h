@@ -11,7 +11,8 @@ class TrainData {
 public:
     TrainData();
 
-    void add(std::initializer_list<arma::Col<T>>&& inputs, arma::Col<T>&& output);
+    void add(const std::initializer_list<arma::Col<T>>& inputs, const arma::Col<T>& output);
+    void add(std::initializer_list<arma::Col<T>> inputs, arma::Col<T>&& output);
     void add(arma::Col<T>&& input, arma::Col<T>&& output);
 
     const std::vector<TrainExample<T>>& data() const { return _data; }
@@ -27,9 +28,14 @@ template <typename T>
 TrainData<T>::TrainData()
 { }
 
+//template <typename T>
+//void TrainData<T>::add(const std::initializer_list<arma::Col<T>>& inputs, const arma::Col<T>& output) {
+//    add(std::move(inputs), std::move(output));
+//}
+
 template <typename T>
-void TrainData<T>::add(std::initializer_list<arma::Col<T>>&& inputs, arma::Col<T>&& output) {
-    _data.push_back(TrainExample<T>(inputs, output));
+void TrainData<T>::add(std::initializer_list<arma::Col<T>> inputs, arma::Col<T>&& output) {
+    _data.push_back(TrainExample<T>(std::move(inputs), std::move(output)));
 }
 
 template <typename T>
