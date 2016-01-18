@@ -33,6 +33,7 @@ public:
     void state_capture();
     void state_rewind();
     void state_next();
+    bool is_ended();
 
 private:
     TrainData<T> _train_data;
@@ -116,6 +117,11 @@ void StreamLayer<T>::state_next() {
         _state_train_example_it = _state_data_it->inputs().begin();
     }
     state_rewind();
+}
+
+template <typename T> inline
+bool StreamLayer<T>::is_ended() {
+    return _data_it == _train_data.data().end();
 }
 
 #endif // CPPNET_STREAMLAYER_H

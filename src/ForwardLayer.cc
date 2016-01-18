@@ -41,9 +41,11 @@ void ForwardLayer::init() {
     Layer::init();
     delete _w;
     _w = new arma::mat(_output_size, _input_size, arma::fill::randu);
+    *_w -= 0.5;
 
     delete _b;
     _b = new arma::vec(_output_size, arma::fill::randu);
+    *_b -= 0.5;
 
     delete _dw;
     _dw = new arma::mat(_output_size, _input_size, arma::fill::zeros);
@@ -82,7 +84,6 @@ void ForwardLayer::backpropagate(const arma::vec* layer_error) {
 
     if (is_output()) {
         auto delta = *_prev_activation - *layer_error;
-
         *_dw += delta * prev_layer_activation->t();
         *_db += delta;
         ++_m;
@@ -90,19 +91,20 @@ void ForwardLayer::backpropagate(const arma::vec* layer_error) {
         arma::vec delta_prev_layer = (_w->t() * delta) % dsigma(prev_layer_out);
         return prev_layer()->backpropagate(&delta_prev_layer);
     } else {
-        *_dw += (*layer_error) * prev_layer_activation->t();
-        *_db += *layer_error;
+        auto& delta = *layer_error;
+        *_dw += delta * prev_layer_activation->t();
+        *_db += delta;
         ++_m;
 
-        arma::vec delta_prev_layer = (_w->t() * (*layer_error)) % dsigma(prev_layer_out);
+        arma::vec delta_prev_layer = (_w->t() * delta) % dsigma(prev_layer_out);
         return prev_layer()->backpropagate(&delta_prev_layer);
     }
 }
 
 void ForwardLayer::backpropagate_apply() {
-    double learning_rate = 5;
+    double learning_rate = 0.1;
     double regularization = 0.00001;
-    double momentum = 0.8;
+    double momentum = 0.0;
 
     if (_m > 0) {
         *_w_last_change = -learning_rate * (*_dw / _m + regularization * (*_w)) + momentum * (*_w_last_change);

@@ -40,18 +40,14 @@ void Net::train(TrainData<T>&& train_data) {
     int max_iterations = 1000;
     for (int iteration = 1; iteration <= max_iterations; ++iteration) {
         std::cout << "Iteration #" << iteration << std::endl;
-        while (true) {
-            try {
-                stream_layer->state_capture();
-                res = _layers.back()->activate();
-                stream_layer->state_rewind();
-                _layers.back()->backpropagate(stream_layer->get_current_output());
-//                std::cout << *res << std::endl;
-                stream_layer->state_next();
-            } catch (EndOfDataException&) {
-                break;
-            }
-        }
+        do {
+            stream_layer->state_capture();
+            res = _layers.back()->activate();
+            stream_layer->state_rewind();
+            _layers.back()->backpropagate(stream_layer->get_current_output());
+//            std::cout << *res << std::endl;
+            stream_layer->state_next();
+        } while(!stream_layer->is_ended());
         _layers.back()->backpropagate_apply();
         stream_layer->start_over();
     }
