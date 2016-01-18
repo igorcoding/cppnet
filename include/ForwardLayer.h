@@ -29,8 +29,7 @@ protected:
     arma::vec* _b_last_change;
 
 
-private:
-    void clean_dw();
+    virtual void clean_dw();
 };
 
 #endif //CPPNET_FORWARDLAYER_H

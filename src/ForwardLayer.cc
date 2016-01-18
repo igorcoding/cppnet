@@ -70,6 +70,7 @@ const arma::vec* ForwardLayer::activate() {
     if (activation == nullptr) {
         return nullptr;
     }
+//    std::cout << *activation << std::endl;
     *_prev_out = (*_w) * (*activation) + *_b;
     *_prev_activation = sigma(_prev_out);
     return _prev_activation;
@@ -80,8 +81,7 @@ void ForwardLayer::backpropagate(const arma::vec* layer_error) {
     const auto& prev_layer_out = prev_layer()->prev_out();
 
     if (is_output()) {
-        auto error = *_prev_activation - *layer_error;
-        arma::vec delta = error % dsigma(_prev_out);
+        auto delta = *_prev_activation - *layer_error;
 
         *_dw += delta * prev_layer_activation->t();
         *_db += delta;
@@ -100,7 +100,7 @@ void ForwardLayer::backpropagate(const arma::vec* layer_error) {
 }
 
 void ForwardLayer::backpropagate_apply() {
-    double learning_rate = 0.7;
+    double learning_rate = 5;
     double regularization = 0.00001;
     double momentum = 0.8;
 

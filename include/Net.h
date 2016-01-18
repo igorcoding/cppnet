@@ -37,7 +37,7 @@ void Net::train(TrainData<T>&& train_data) {
     _layers.back()->set_as_output();
 
     const arma::vec* res = nullptr;
-    int max_iterations = 10000;
+    int max_iterations = 1000;
     for (int iteration = 1; iteration <= max_iterations; ++iteration) {
         std::cout << "Iteration #" << iteration << std::endl;
         while (true) {

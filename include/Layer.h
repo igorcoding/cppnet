@@ -64,8 +64,8 @@ public:
         _init = true;
     }
 
-    bool is_output() { return _is_output; }
-    void set_as_output() { _is_output = true; }
+    virtual bool is_output() { return _is_output; }
+    virtual void set_as_output() { _is_output = true; }
 
     virtual arma::vec eval(const arma::vec& input) {
         if (_prev_layer != nullptr) {
